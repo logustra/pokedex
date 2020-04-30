@@ -272,7 +272,10 @@ export default function PokemonDetail () {
                 key={item.id}
                 span={12}
               >
-                <Link to={`/detail/${item.id}/${item.name}`}>
+                <Link 
+                  to={`/detail/${item.id}/${item.name}`}
+                  className="no-underline"
+                >
                   <Card
                     bordered={false}
                     size="small"
@@ -292,7 +295,7 @@ export default function PokemonDetail () {
 
                       {item.evolutionRequirements && (
                         <p className="mb-0 leading-tight">
-                          You need {item.evolutionRequirements.amount} {item.evolutionRequirements.name} candies to be {item.name}.
+                          You need {item.evolutionRequirements.amount} {item.evolutionRequirements.name} to be {item.name}
                         </p>
                       )}
                     </div>

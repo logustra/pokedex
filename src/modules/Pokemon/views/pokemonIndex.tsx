@@ -89,7 +89,10 @@ export default function PokemonIndex () {
             key={item.id}
             span={12}
           >
-            <Link to={`/detail/${item.id}/${item.name}`}>
+            <Link 
+              to={`/detail/${item.id}/${item.name}`}
+              className="no-underline"
+            >
               <Card
                 bordered={false}
                 size="small"
