@@ -196,7 +196,6 @@ export default function PokemonDetail () {
 
       <Row
         gutter={[16, 16]}
-        justify="center"
         className="mt-4"
       >
         {Object.keys(pokemon.weight).splice(0, 2).map(type => (
@@ -229,7 +228,6 @@ export default function PokemonDetail () {
 
       <Row
         gutter={[16, 16]}
-        justify="center"
         className="mt-4"
       >
         {Object.keys(pokemon.height).splice(0, 2).map(type => (
