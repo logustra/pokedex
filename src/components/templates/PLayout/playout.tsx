@@ -32,7 +32,7 @@ export default function PLayout ({ children }: Props) {
   return (
     <StyledPLayout className="p-layout">
       {commonState.isOffline && (
-        <div className="fixed bg-red-500 text-white text-center p-1 w-screen left-0">
+        <div className="offline">
           {'You\'re Offline'}
         </div>
       )}
@@ -49,6 +49,20 @@ const StyledPLayout = Styled.div`
     flex
     justify-center
   `};
+
+  > .offline {
+    ${tw`
+      fixed 
+      bg-red-500 
+      text-white 
+      text-center 
+      p-1 
+      w-screen 
+      left-0 
+      z-20
+      mt-12
+    `};
+  }
 
   > .container {
     width: ${rem('480px')};

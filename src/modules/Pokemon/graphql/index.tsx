@@ -1,3 +1,7 @@
 import pokemonsGraphql from './pokemonsGraphql'
+import pokemonGraphql from './pokemonGraphql'
 
-export { pokemonsGraphql }
+export { 
+  pokemonsGraphql,
+  pokemonGraphql
+}

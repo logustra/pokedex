@@ -39,6 +39,7 @@
     }
   },
   "devDependencies": {
+    "@ant-design/icons": "^4.1.0",
     "@apollo/react-hooks": "^3.1.5",
     "@babel/core": "^7.8.3",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",

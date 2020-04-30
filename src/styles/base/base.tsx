@@ -9,6 +9,6 @@ export const GlobalStyleBase = CreateGlobalStyle`
     width: 100%;
     height: 100vh;
     font-size: ${rem('14px')};    
-    background-color: ${colors.gray[100]};
+    background-color: ${colors.gray[100]} !important;
   }
 `
