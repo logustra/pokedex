@@ -24,6 +24,7 @@ import {
   PLoading,
   PError
 } from 'atoms'
+import { PCard } from 'molecules'
 import { PPageHeader } from 'organisms'
 
 import { colors } from '@/styles'
@@ -41,17 +42,15 @@ export default function PokemonDetail () {
   if (error) return <PError />
 
   return (
-    <div className="p-pokemon-index">
+    <div>
       <PPageHeader
         title="Detail"
-        onBack={() => history.goBack()}
+        onBack={() => history.push('/')}
       />
 
-      <Card
-        bordered={false}
-        size="small"
+      <PCard
         bodyStyle={{ width: '100%' }}
-        className="flex flex-col justify-center items-center rounded mt-12"
+        className="mt-12"
         cover={
           <img
             src={pokemon.image}
@@ -60,94 +59,92 @@ export default function PokemonDetail () {
           />
         }
       >
-        <div className="text-center">
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            {pokemon.name}
-          </h2>
+        <h2 className="title">
+          {pokemon.name}
+        </h2>
 
-          <p className="text-gray-500 mb-0">
-            {pokemon.classification}
-          </p>
+        <p className="text-gray-500">
+          {pokemon.classification}
+        </p>
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Types
-          </h2>
+        <h2 className="title">
+          Types
+        </h2>
 
-          {pokemon.types.map((item: string) => (
-            <Tag
-              key={`type-${item}`}
-              color={colors.green[500]}
-              className="my-2"
-            >
-              {item}
-            </Tag>
-          ))}
+        {pokemon.types.map((item: string) => (
+          <Tag
+            key={`type-${item}`}
+            color={colors.green[500]}
+            className="my-2"
+          >
+            {item}
+          </Tag>
+        ))}
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Resistant
-          </h2>
+        <h2 className="title">
+          Resistant
+        </h2>
 
-          {pokemon.resistant.map((item: string) => (
-            <Tag
-              key={`type-${item}`}
-              color={colors.blue[500]}
-              className="my-2"
-            >
-              {item}
-            </Tag>
-          ))}
+        {pokemon.resistant.map((item: string) => (
+          <Tag
+            key={`type-${item}`}
+            color={colors.blue[500]}
+            className="my-2"
+          >
+            {item}
+          </Tag>
+        ))}
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Weaknesses
-          </h2>
+        <h2 className="title">
+          Weaknesses
+        </h2>
 
-          {pokemon.weaknesses.map((item: string) => (
-            <Tag
-              key={`type-${item}`}
-              color={colors.red[500]}
-              className="my-2"
-            >
-              {item}
-            </Tag>
-          ))}
+        {pokemon.weaknesses.map((item: string) => (
+          <Tag
+            key={`type-${item}`}
+            color={colors.red[500]}
+            className="my-2"
+          >
+            {item}
+          </Tag>
+        ))}
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Max. HP
-          </h2>
+        <h2 className="title">
+          Max. HP
+        </h2>
 
-          <p className="text-lg">
-            {pokemon.maxHP}
-          </p>
+        <p className="text-lg mt-2">
+          {pokemon.maxHP}
+        </p>
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Max. CP
-          </h2>
+        <h2 className="title">
+          Max. CP
+        </h2>
 
-          <p className="text-lg">
-            {pokemon.maxCP}
-          </p>
+        <p className="text-lg mt-2">
+          {pokemon.maxCP}
+        </p>
 
-          <Divider className="my-2" />
+        <Divider className="my-4" />
 
-          <h2 className="text-base font-bold tracking-wide mb-0">
-            Flee Rate
-          </h2>
+        <h2 className="title">
+          Flee Rate
+        </h2>
 
-          <p className="text-lg">
-            {pokemon.fleeRate}
-          </p>
-        </div>
-      </Card>
+        <p className="text-lg mt-2">
+          {pokemon.fleeRate}
+        </p>
+      </PCard>
 
       {Object.keys(pokemon.attacks).splice(0, 2).map(type => (
         <React.Fragment key={`${type}-attack`}>
@@ -165,25 +162,19 @@ export default function PokemonDetail () {
                 key={item.id}
                 span={12}
               >
-                <Card
-                  bordered={false}
-                  size="small"
-                  className="flex flex-col justify-center items-center rounded"
-                >
-                  <div className="text-center">
-                    <h2 className="text-base font-bold tracking-wide mb-0">
-                      {item.name}
-                    </h2>
+                <PCard>
+                  <h2 className="title">
+                    {item.name}
+                  </h2>
 
-                    <p className="text-gray-500">
-                      {item.type}
-                    </p>
+                  <p className="text-gray-500">
+                    {item.type}
+                  </p>
 
-                    <p className="text-lg mb-0">
-                      {item.damage}
-                    </p>
-                  </div>
-                </Card>
+                  <p className="text-lg mt-2">
+                    {item.damage}
+                  </p>
+                </PCard>
               </Col>
             ))}
           </Row>
@@ -203,21 +194,15 @@ export default function PokemonDetail () {
             key={`${type}-weight`}
             span={12}
           >
-            <Card
-              bordered={false}
-              size="small"
-              className="flex flex-col justify-center items-center rounded"
-            >
-              <div className="text-center">
-                <h2 className="text-base font-bold tracking-wide capitalize">
-                  {type}
-                </h2>
+            <PCard>
+              <h2 className="title">
+                {type}
+              </h2>
 
-                <p className="text-lg mb-0">
-                  {pokemon.weight[type]}
-                </p>
-              </div>
-            </Card>
+              <p className="text-lg mt-2">
+                {pokemon.weight[type]}
+              </p>
+            </PCard>
           </Col>
         ))}
       </Row>
@@ -235,21 +220,15 @@ export default function PokemonDetail () {
             key={`${type}-height`}
             span={12}
           >
-            <Card
-              bordered={false}
-              size="small"
-              className="flex flex-col justify-center items-center rounded"
-            >
-              <div className="text-center">
-                <h2 className="text-base font-bold tracking-wide capitalize">
-                  {type}
-                </h2>
+            <PCard>
+              <h2 className="title">
+                {type}
+              </h2>
 
-                <p className="text-lg mb-0">
-                  {pokemon.height[type]}
-                </p>
-              </div>
-            </Card>
+              <p className="text-lg mt-2">
+                {pokemon.weight[type]}
+              </p>
+            </PCard>
           </Col>
         ))}
       </Row>
@@ -274,10 +253,7 @@ export default function PokemonDetail () {
                   to={`/detail/${item.id}/${item.name}`}
                   className="no-underline"
                 >
-                  <Card
-                    bordered={false}
-                    size="small"
-                    className="flex flex-col justify-center items-center rounded"
+                  <PCard
                     cover={
                       <img
                         src={item.image}
@@ -286,18 +262,16 @@ export default function PokemonDetail () {
                       />
                     }
                   >
-                    <div className="text-center">
-                      <h2 className="text-base font-bold tracking-wide">
-                        {item.name}
-                      </h2>
+                    <h2 className="title">
+                      {item.name}
+                    </h2>
 
-                      {item.evolutionRequirements && (
-                        <p className="mb-0 leading-tight">
-                          You need {item.evolutionRequirements.amount} {item.evolutionRequirements.name} to be {item.name}
-                        </p>
-                      )}
-                    </div>
-                  </Card>
+                    {item.evolutionRequirements && (
+                      <p className="mt-2 leading-tight">
+                        You need {item.evolutionRequirements.amount} {item.evolutionRequirements.name} to be {item.name}
+                      </p>
+                    )}
+                  </PCard>
                 </Link>
               </Col>
             ))}

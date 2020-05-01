@@ -1,4 +1,5 @@
 export interface PokemonTypeAttacksModel {
+  id: string,
   name: string,
   type: string,
   damage: number

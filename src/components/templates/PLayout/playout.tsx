@@ -1,13 +1,16 @@
 import React from 'react'
 import Styled from 'styled-components/macro'
 import tw from 'tailwind.macro'
-import { rem } from 'polished'
 
 import { Props } from './playout.typings'
 
 import { setOffline } from '@/stores'
 
 import { useGlobalStore } from '@/libs'
+
+import PContainer from '../PContainer/pcontainer'
+
+import { Row } from 'antd'
 
 export default function PLayout ({ children }: Props) {
   const { 
@@ -30,26 +33,24 @@ export default function PLayout ({ children }: Props) {
   }, []) // eslint-disable-line
 
   return (
-    <StyledPLayout className="p-layout">
+    <StyledPLayout 
+      justify="center"
+      className="p-layout"
+    >
       {commonState.isOffline && (
         <div className="offline">
           {'You\'re Offline'}
         </div>
       )}
 
-      <div className="container">
+      <PContainer>
         {children}
-      </div>
+      </PContainer>
     </StyledPLayout>
   )
 }
 
-const StyledPLayout = Styled.div`
-  ${tw`
-    flex
-    justify-center
-  `};
-
+const StyledPLayout = Styled(Row)`
   > .offline {
     ${tw`
       fixed 
@@ -62,10 +63,5 @@ const StyledPLayout = Styled.div`
       z-20
       mt-12
     `};
-  }
-
-  > .container {
-    width: ${rem('480px')};
-    ${tw`p-4`};
   }
 `

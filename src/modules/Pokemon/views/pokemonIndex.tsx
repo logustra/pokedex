@@ -8,7 +8,7 @@ import { pokemonsGraphql } from '../graphql'
 import { 
   Row, 
   Col,  
-  Card,
+  Divider,
   Tag,
   Button
 } from 'antd'
@@ -19,7 +19,12 @@ import {
   PLoading,
   PError
 } from 'atoms'
+import { PCard } from 'molecules'
 import { PPageHeader } from 'organisms'
+import { 
+  PContainer,
+  POverlay
+} from 'templates'
 
 import { colors } from '@/styles'
 
@@ -59,26 +64,33 @@ export default function PokemonIndex () {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
+  const [pokemonTypes, setPokemonTypes] = React.useState<{}[]>([])
+
+  React.useEffect(() => {
+    if (pokemons) {
+      const types: string[] = []
+
+      pokemons.forEach((item: any) => {
+        item.types.forEach((type: string) => {
+          types.push(type)
+        })
+      })
+
+      const uniqueTypes = Array.from(new Set(types)).map(item => ({
+        name: item,
+        isActive: false
+      }))
+
+      setPokemonTypes(uniqueTypes)
+    }
+  }, [pokemons])
+
   if (loading && !loadMore) return <PLoading mode="full" />
   if (error) return <PError />
 
   return (
-    <div className="p-pokemon-index">
+    <div>
       <PPageHeader title="Pokémons" />
-
-      <Row 
-        justify="center" 
-        className="fixed w-full left-0 bottom-0 z-10 p-4"
-      >
-        <Button
-          type="primary"
-          shape="round"
-          icon={<FilterOutlined />}
-          className="flex items-center"
-        >
-          Filter
-        </Button>
-      </Row>
 
       <Row 
         gutter={[16, 16]}
@@ -93,10 +105,8 @@ export default function PokemonIndex () {
               to={`/detail/${item.id}/${item.name}`}
               className="no-underline"
             >
-              <Card
-                bordered={false}
-                size="small"
-                className="flex flex-col justify-center items-center rounded"
+              <PCard
+                bodyStyle={{ width: '100%' }}
                 cover={
                   <img
                     src={item.image}
@@ -105,33 +115,72 @@ export default function PokemonIndex () {
                   />
                 }
               >
-                <div className="text-center">
-                  <h2 className="text-base font-bold tracking-wide mb-0">
-                    {item.name}
-                  </h2>
+                <h2 className="title">
+                  {item.name}
+                </h2>
 
-                  <p className="text-gray-500 mb-0">
-                    {item.classification}
-                  </p>
+                <p className="text-gray-500">
+                  {item.classification}
+                </p>
 
-                  {item.types.map(type => (
-                    <Tag
-                      key={`type-${type}`}
-                      color={colors.green[500]}
-                      className="mt-2"
-                    >
-                      {type}
-                    </Tag>
-                  ))}
-                </div>
-              </Card>
+                <Divider className="my-4" />
+
+                {item.types.map(type => (
+                  <Tag
+                    key={`type-${type}`}
+                    color={colors.green[500]}
+                  >
+                    {type}
+                  </Tag>
+                ))}
+              </PCard>
             </Link>
           </Col>
         ))}
 
         {loadMore && <PLoading />}
       </Row>
+
+      <POverlay
+        position="bottom"
+        className="z-10"
+      >
+        <PContainer className="flex justify-center">
+          <Button
+            type="primary"
+            shape="round"
+            icon={<FilterOutlined />}
+            className="flex items-center"
+          >
+            Filter
+          </Button>
+        </PContainer>
+      </POverlay>
+
+      {/* <PokemonTypes types={pokemonTypes} /> */}
     </div>
   )
 }
 
+function PokemonTypes ({ types }) {
+  return (
+    <POverlay 
+      position="top"
+      mode="full"
+      className="bg-white z-20"
+    >
+      <PContainer className="mt-12">
+        <PPageHeader 
+          title="Filter" 
+          onBack={() => console.log('pressed')}
+        />
+
+        {types.map(item => (
+          <div key={`${item.name}-type`}>
+            {item.name}
+          </div>
+        ))}
+      </PContainer>
+    </POverlay>
+  )
+}
