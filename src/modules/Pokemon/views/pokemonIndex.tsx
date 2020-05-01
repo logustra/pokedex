@@ -34,7 +34,7 @@ export default function PokemonIndex () {
   const { loading, error, data, fetchMore } = useQuery(pokemonsGraphql, { variables })
   const pokemons = data && data.pokemons
 
-  const  handleScroll = React.useCallback(() => {
+  function handleScroll () {
     const innerHeight: number = window.innerHeight
     const scrollTop: number = document.documentElement.scrollTop
     const element: HTMLElement | null = document.getElementById('app')
@@ -57,12 +57,12 @@ export default function PokemonIndex () {
         })
       }
     })
-  }, [fetchMore, variables])
+  }
 
   React.useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll)    
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+  }, [variables]) // eslint-disable-line
 
   const [pokemonTypes, setPokemonTypes] = React.useState<{}[]>([])
 

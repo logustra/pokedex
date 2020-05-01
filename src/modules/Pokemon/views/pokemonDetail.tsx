@@ -15,7 +15,6 @@ import { pokemonGraphql } from '../graphql'
 import { 
   Row,
   Col,
-  Card,
   Divider,
   Tag
 } from 'antd'
