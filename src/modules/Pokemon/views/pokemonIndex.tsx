@@ -2,7 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
 
-import { PokemonsModel } from '../typings/pokemonsTypings'
+import { 
+  PokemonsModel,
+  PokemonTypes
+} from '../typings/pokemonsTypings'
 import { pokemonsGraphql } from '../graphql'
 
 import { 
@@ -13,7 +16,10 @@ import {
   Button
 } from 'antd'
 
-import { FilterOutlined } from '@ant-design/icons'
+import { 
+  FilterOutlined,
+  CheckOutlined
+} from '@ant-design/icons'
 
 import {
   PLoading,
@@ -31,6 +37,8 @@ import { colors } from '@/styles'
 export default function PokemonIndex () {
   const [loadMore, setLoadMore] = React.useState(false)
   const [variables, setVariables] = React.useState({ first: 20 })
+  const [filteredPokemons, setFilteredPokemons] = React.useState<PokemonsModel[]>([])
+
   const { loading, error, data, fetchMore } = useQuery(pokemonsGraphql, { variables })
   const pokemons = data && data.pokemons
 
@@ -60,30 +68,80 @@ export default function PokemonIndex () {
   }
 
   React.useEffect(() => {
-    window.addEventListener('scroll', handleScroll)    
+    if (!filteredPokemons.length) {
+      window.addEventListener('scroll', handleScroll)   
+    }
+     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [variables]) // eslint-disable-line
+  }, [filteredPokemons, variables]) // eslint-disable-line
 
-  const [pokemonTypes, setPokemonTypes] = React.useState<{}[]>([])
+  const [pokemonTypes, setPokemonTypes] = React.useState<PokemonTypes[]>([])
 
   React.useEffect(() => {
     if (pokemons) {
       const types: string[] = []
 
-      pokemons.forEach((item: any) => {
+      pokemons.forEach((item: PokemonsModel) => {
         item.types.forEach((type: string) => {
           types.push(type)
         })
       })
 
       const uniqueTypes = Array.from(new Set(types)).map(item => ({
-        name: item,
+        type: item,
         isActive: false
       }))
 
       setPokemonTypes(uniqueTypes)
     }
   }, [pokemons])
+
+  const [visibilityFilter, setVisibilityFilter] = React.useState(false)
+  const [filterPokemons, setFilterPokemons] = React.useState<string[]>([])
+
+  function handleFilter (index: number) {
+    const types: PokemonTypes[] = pokemonTypes
+    types[index].isActive = !types[index].isActive
+
+    setPokemonTypes([...types])
+
+    const filter: string[] = []
+    
+    types.forEach((item: PokemonTypes) => {
+      if (item.isActive) {
+        filter.push(item.type)
+      }
+    })
+
+    setFilterPokemons(filter)
+    setLoadMore(false)
+  }
+
+  function handleApplyFilter () {
+    const filtered: PokemonsModel[] = []
+
+    pokemons.forEach((item: PokemonsModel) => item.types.forEach(type => {
+      if (filterPokemons.includes(type)) {
+        filtered.push(item)
+      }
+    }))
+
+    const uniqueFiltered: any = Array.from(new Set(filtered.map((item: PokemonsModel) => item.id))).map(id => filtered.find(item => item.id === id))
+
+    setFilteredPokemons(uniqueFiltered)
+    setVisibilityFilter(false)
+  }
+
+  function handleResetFilter () {
+    const types: PokemonTypes[] = pokemonTypes.map((item: PokemonTypes) => ({
+      ...item,
+      isActive: false
+    }))
+
+    setPokemonTypes([...types])
+    setFilterPokemons([])
+    setFilteredPokemons([])
+  }
 
   if (loading && !loadMore) return <PLoading mode="full" />
   if (error) return <PError />
@@ -96,47 +154,91 @@ export default function PokemonIndex () {
         gutter={[16, 16]}
         className="mt-12"
       >
-        {pokemons.map((item: PokemonsModel) => (
-          <Col 
-            key={item.id}
-            span={12}
-          >
-            <Link 
-              to={`/detail/${item.id}/${item.name}`}
-              className="no-underline"
+        {!filteredPokemons.length ? (
+          pokemons.map((item: PokemonsModel) => (
+            <Col 
+              key={item.id}
+              span={12}
             >
-              <PCard
-                bodyStyle={{ width: '100%' }}
-                cover={
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-auto p-4 h-40"
-                  />
-                }
+              <Link 
+                to={`/detail/${item.id}/${item.name}`}
+                className="no-underline"
               >
-                <h2 className="title">
-                  {item.name}
-                </h2>
+                <PCard
+                  bodyStyle={{ width: '100%' }}
+                  cover={
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-auto p-4 h-40"
+                    />
+                  }
+                >
+                  <h2 className="title">
+                    {item.name}
+                  </h2>
 
-                <p className="text-gray-500">
-                  {item.classification}
-                </p>
+                  <p className="text-gray-500">
+                    {item.classification}
+                  </p>
 
-                <Divider className="my-4" />
+                  <Divider className="my-4" />
 
-                {item.types.map(type => (
-                  <Tag
-                    key={`type-${type}`}
-                    color={colors.green[500]}
-                  >
-                    {type}
-                  </Tag>
-                ))}
-              </PCard>
-            </Link>
-          </Col>
-        ))}
+                  {item.types.map(type => (
+                    <Tag
+                      key={`type-${type}`}
+                      color={colors.green[500]}
+                    >
+                      {type}
+                    </Tag>
+                  ))}
+                </PCard>
+              </Link>
+            </Col>
+          ))
+        ) : (
+          filteredPokemons.map((item: PokemonsModel) => (
+            <Col 
+              key={item.id}
+              span={12}
+            >
+              <Link 
+                to={`/detail/${item.id}/${item.name}`}
+                className="no-underline"
+              >
+                <PCard
+                  bodyStyle={{ width: '100%' }}
+                  cover={
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-auto p-4 h-40"
+                    />
+                  }
+                >
+                  <h2 className="title">
+                    {item.name}
+                  </h2>
+
+                  <p className="text-gray-500">
+                    {item.classification}
+                  </p>
+
+                  <Divider className="my-4" />
+
+                  {item.types.map(type => (
+                    <Tag
+                      key={`type-${type}`}
+                      color={colors.green[500]}
+                    >
+                      {type}
+                    </Tag>
+                  ))}
+                </PCard>
+              </Link>
+            </Col>
+          ))
+        )}
 
         {loadMore && <PLoading />}
       </Row>
@@ -151,36 +253,80 @@ export default function PokemonIndex () {
             shape="round"
             icon={<FilterOutlined />}
             className="flex items-center"
+            onClick={() => setVisibilityFilter(true)}
           >
             Filter
           </Button>
         </PContainer>
       </POverlay>
 
-      {/* <PokemonTypes types={pokemonTypes} /> */}
+      {visibilityFilter && (
+        <POverlay
+          position="top"
+          mode="full"
+          className="bg-white z-20"
+        >
+          <PContainer className="mt-12">
+            <PPageHeader
+              title="Filter"
+              onBack={() => setVisibilityFilter(false)}
+              extra={[
+                <Button 
+                  key="1" 
+                  type="link"
+                  className="text-white"
+                  onClick={() => handleResetFilter()}
+                >
+                  Reset
+                </Button>
+              ]}
+            />
+
+            <div className="-m-1">
+              {pokemonTypes.map((item: PokemonTypes, index: number) => (
+                !item.isActive ? (
+                  <div className="inline-block m-1">
+                    <Button
+                      key={`${item.type}-type`}
+                      shape="round"
+                      onClick={() => handleFilter(index)}
+                    >
+                      {item.type}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="inline-block m-1">
+                    <Button
+                      key={`${item.type}-type`}
+                      shape="round"
+                      className="flex items-center text-blue-500 border-blue-500"
+                      icon={<CheckOutlined />}
+                      onClick={() => handleFilter(index)}
+                    >
+                      {item.type}
+                    </Button>
+                  </div>
+                )
+              ))}
+            </div>
+
+            <POverlay
+              position="bottom"
+              className="z-10 bg-white shadow"
+            >
+              <PContainer className="flex justify-center">
+                <Button
+                  type="primary"
+                  className="w-full"
+                  onClick={() => handleApplyFilter()}
+                >
+                  Apply Filter
+                </Button>
+              </PContainer>
+            </POverlay>
+          </PContainer>
+        </POverlay>
+      )}
     </div>
-  )
-}
-
-function PokemonTypes ({ types }) {
-  return (
-    <POverlay 
-      position="top"
-      mode="full"
-      className="bg-white z-20"
-    >
-      <PContainer className="mt-12">
-        <PPageHeader 
-          title="Filter" 
-          onBack={() => console.log('pressed')}
-        />
-
-        {types.map(item => (
-          <div key={`${item.name}-type`}>
-            {item.name}
-          </div>
-        ))}
-      </PContainer>
-    </POverlay>
   )
 }

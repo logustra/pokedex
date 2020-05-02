@@ -4,4 +4,9 @@ export interface PokemonsModel {
   image: string,
   name: string,
   types: string[]
-} 
+}
+
+export interface PokemonTypes {
+  type: string,
+  isActive: boolean
+}

@@ -9,11 +9,17 @@ import { PageHeader } from 'antd'
 
 import { colors } from '@/styles'
 
-export default function PPageHeader ({ title, onBack, className }: Props) {
+export default function PPageHeader ({ 
+  title, 
+  onBack, 
+  extra,
+  className 
+}: Props) {
   return (
     <StyledPPageHeader 
       title={title}
       onBack={onBack}
+      extra={extra}
       className={`p-page-header fixed px-0 py-1 ${className ? className : ''}`} 
     />
   )
