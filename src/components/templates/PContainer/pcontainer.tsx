@@ -14,10 +14,7 @@ export default function PExample ({ children, className }: Props) {
 }
 
 const StyledPContainer = Styled.div`
-  ${tw`
-    p-4
-    overflow-y-auto
-  `};
+  ${tw`p-4`};
 
   width: ${rem('480px')};
 `

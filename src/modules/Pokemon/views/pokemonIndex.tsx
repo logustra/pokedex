@@ -97,6 +97,17 @@ export default function PokemonIndex () {
   }, [pokemons])
 
   const [visibilityFilter, setVisibilityFilter] = React.useState(false)
+
+  function handleVisibilityFilter (visibility: boolean) {
+    if (visibility) {
+      document.body.classList.add('overflow-y-hidden')
+    } else {
+      document.body.classList.remove('overflow-y-hidden')
+    }
+    
+    setVisibilityFilter(visibility)
+  }
+
   const [filterPokemons, setFilterPokemons] = React.useState<string[]>([])
 
   function handleFilter (index: number) {
@@ -129,7 +140,7 @@ export default function PokemonIndex () {
     const uniqueFiltered: any = Array.from(new Set(filtered.map((item: PokemonsModel) => item.id))).map(id => filtered.find(item => item.id === id))
 
     setFilteredPokemons(uniqueFiltered)
-    setVisibilityFilter(false)
+    handleVisibilityFilter(false)
   }
 
   function handleResetFilter () {
@@ -253,7 +264,7 @@ export default function PokemonIndex () {
             shape="round"
             icon={<FilterOutlined />}
             className="flex items-center"
-            onClick={() => setVisibilityFilter(true)}
+            onClick={() => handleVisibilityFilter(true)}
           >
             Filter
           </Button>
@@ -264,12 +275,12 @@ export default function PokemonIndex () {
         <POverlay
           position="top"
           mode="full"
-          className="bg-white z-20"
+          className="bg-white z-20 overflow-y-scroll"
         >
-          <PContainer className="mt-12">
+          <PContainer className="-mx-1 mt-12 mb-16">
             <PPageHeader
               title="Filter"
-              onBack={() => setVisibilityFilter(false)}
+              onBack={() => handleVisibilityFilter(false)}
               extra={[
                 <Button 
                   key="1" 
@@ -282,33 +293,31 @@ export default function PokemonIndex () {
               ]}
             />
 
-            <div className="-m-1">
-              {pokemonTypes.map((item: PokemonTypes, index: number) => (
-                !item.isActive ? (
-                  <div className="inline-block m-1">
-                    <Button
-                      key={`${item.type}-type`}
-                      shape="round"
-                      onClick={() => handleFilter(index)}
-                    >
-                      {item.type}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="inline-block m-1">
-                    <Button
-                      key={`${item.type}-type`}
-                      shape="round"
-                      className="flex items-center text-blue-500 border-blue-500"
-                      icon={<CheckOutlined />}
-                      onClick={() => handleFilter(index)}
-                    >
-                      {item.type}
-                    </Button>
-                  </div>
-                )
-              ))}
-            </div>
+            {pokemonTypes.map((item: PokemonTypes, index: number) => (
+              !item.isActive ? (
+                <div className="inline-block m-1">
+                  <Button
+                    key={`${item.type}-type`}
+                    shape="round"
+                    onClick={() => handleFilter(index)}
+                  >
+                    {item.type}
+                  </Button>
+                </div>
+              ) : (
+                <div className="inline-block m-1">
+                  <Button
+                    key={`${item.type}-type`}
+                    shape="round"
+                    className="flex items-center text-blue-500 border-blue-500"
+                    icon={<CheckOutlined />}
+                    onClick={() => handleFilter(index)}
+                  >
+                    {item.type}
+                  </Button>
+                </div>
+              )
+            ))}
 
             <POverlay
               position="bottom"
