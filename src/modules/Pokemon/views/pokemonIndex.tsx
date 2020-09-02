@@ -43,28 +43,27 @@ export default function PokemonIndex () {
   const pokemons = data && data.pokemons
 
   function handleScroll () {
-    const innerHeight: number = window.innerHeight
-    const scrollTop: number = document.documentElement.scrollTop
-    const element: HTMLElement | null = document.getElementById('app')
-    const elementHeight = element && element.offsetHeight
+    if (document.documentElement.scrollTop > 0) {
+      const isBottom = document.documentElement.scrollTop + window.innerHeight === document.documentElement.scrollHeight
 
-    if (innerHeight + scrollTop !== elementHeight) return
+      if (!isBottom) return
 
-    fetchMore({
-      variables: { first: variables.first + 10 },
-      updateQuery: (prev, { fetchMoreResult, variables }) => {
-        if (variables) {
-          setLoadMore(true)
-          setVariables(variables)
+      fetchMore({
+        variables: { first: variables.first + 10 },
+        updateQuery: (prev, { fetchMoreResult, variables }) => {
+          if (variables) {
+            setLoadMore(true)
+            setVariables(variables)
+          }
+
+          if (!fetchMoreResult) return prev
+
+          return Object.assign({}, prev, {
+            pokemons: [...fetchMoreResult.pokemons]
+          })
         }
-
-        if (!fetchMoreResult) return prev
-
-        return Object.assign({}, prev, {
-          pokemons: [...fetchMoreResult.pokemons]
-        })
-      }
-    })
+      })
+    }
   }
 
   React.useEffect(() => {
