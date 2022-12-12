@@ -113,7 +113,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "helmet": "^3.22.0",
     "iltorb": "^2.4.4",
     "node-zopfli-es": "^1.0.4",
